@@ -72,48 +72,48 @@ const url = "https://vnlisserver.onrender.com/api";
 const token =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZDFjMTEzOGI4ZWQ5YjAzZDQ0YTViZiIsImlhdCI6MTcwODU3NjExOSwiZXhwIjoxNzQwMTEyMTE5fQ._3AQ5Z4IFewlJ0GbcSYt1rBOiw1-HzM1jozADYA2UTg";
 
-export const useGetPlannedTasksByUser = (weekNum, year) => {
-  return useQuery({
-    queryKey: ["GET_PLANNEDTASKS"],
-    queryFn: async () => {
-      const res = await axios({
-        method: "get",
-        url: `${url}/plannedTasks/user?weekNum=${weekNum}&year=${year}`,
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      return res.data;
-    },
-  });
-};
+// export const useGetPlannedTasksByUser = (weekNum, year) => {
+//   return useQuery({
+//     queryKey: ["GET_PLANNEDTASKS"],
+//     queryFn: async () => {
+//       const res = await axios({
+//         method: "get",
+//         url: `${url}/plannedTasks/user?weekNum=${weekNum}&year=${year}`,
+//         headers: {
+//           Authorization: `Bearer ${token}`,
+//         },
+//       });
+//       return res.data;
+//     },
+//   });
+// };
 
-export const useCreateTaskInPlannedTask = () => {
-  const queryClient = useQueryClient();
-  const plannedTaskId = "65d1cccbefd1211377cedbed";
+// export const useCreateTaskInPlannedTask = () => {
+//   const queryClient = useQueryClient();
+//   const plannedTaskId = "65d1cccbefd1211377cedbed";
 
-  const { mutate: createTaskInPlannedTask, isPending: isCreating } =
-    useMutation({
-      mutationFn: async (task) => {
-        const res = await axios({
-          method: "post",
-          url: `${url}/plannedTasks/${plannedTaskId}/addTask`,
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          data: {
-            ...task,
-          },
-        });
-        console.log(res);
-        return res;
-      },
-      onSuccess: () => {
-        queryClient.invalidateQueries(["GET_PLANNEDTASKS"]);
-      },
-    });
-  return { isCreating, createTaskInPlannedTask };
-};
+//   const { mutate: createTaskInPlannedTask, isPending: isCreating } =
+//     useMutation({
+//       mutationFn: async (task) => {
+//         const res = await axios({
+//           method: "post",
+//           url: `${url}/plannedTasks/${plannedTaskId}/addTask`,
+//           headers: {
+//             Authorization: `Bearer ${token}`,
+//           },
+//           data: {
+//             ...task,
+//           },
+//         });
+//         console.log(res);
+//         return res;
+//       },
+//       onSuccess: () => {
+//         queryClient.invalidateQueries(["GET_PLANNEDTASKS"]);
+//       },
+//     });
+//   return { isCreating, createTaskInPlannedTask };
+// };
 
 export const useUpdateTaskInPlannedTask = () => {
   const queryClient = useQueryClient();

@@ -4,13 +4,13 @@ import { useForm } from "react-hook-form";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import {
-  useCreateTaskInPlannedTask,
   useDeleteTaskInPlannedTask,
   useUpdateTaskInPlannedTask,
 } from "../requests";
 import FormRow from "../ui/FormRow";
 import { useDispatch } from "react-redux";
 import { addTask, updateTask, deleteTask } from "../Calendar/CalendarTaskSlice";
+import createTaskInPlannedTask from "../requests/createTaskInPlannedTask";
 
 export default function EventForm({ task = {} }) {
   const dispatch = useDispatch();
@@ -25,13 +25,27 @@ export default function EventForm({ task = {} }) {
   });
   const { errors } = formState;
 
-  const { createTaskInPlannedTask } = useCreateTaskInPlannedTask();
   const { updateTaskInPlannedTask } = useUpdateTaskInPlannedTask();
   const { deleteTaskInPlannedTask } = useDeleteTaskInPlannedTask();
 
+  function createTask(newTask) {
+    dispatch(addTask(newTask));
+
+    createTaskInPlannedTask(newTask)
+      .then((res) => {
+        if (res.data.status === "success") {
+          console.log("success");
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    reset();
+  }
+
   const onSubmit = async (values) => {
     if (!isUpdateSession) {
-      const selectedAppointment = {
+      createTask({
         ...values,
         start: start.toISOString(),
         end: end.toISOString(),
@@ -39,11 +53,7 @@ export default function EventForm({ task = {} }) {
         endDate: end.toISOString(),
         isDraggable: true,
         isResizable: true,
-      };
-
-      dispatch(addTask(selectedAppointment));
-      createTaskInPlannedTask(selectedAppointment);
-      reset();
+      });
     } else {
       const selectedAppointment = {
         ...values,
