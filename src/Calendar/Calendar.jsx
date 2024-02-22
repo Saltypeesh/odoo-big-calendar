@@ -32,7 +32,7 @@ export const Calendar = ({
   onShowAppointmentView,
   draggedEvent,
   plannedTasks,
-  setPlannedTasks
+  setPlannedTasks,
 }) => {
   const { updateTaskInPlannedTask } = useUpdateTaskInPlannedTask();
 
@@ -53,17 +53,26 @@ export const Calendar = ({
 
   const onChangeEventTime = useCallback(
     ({ event, start, end }) => {
-      const updateEvent = {
-        ...event,
-        startDate: new Date(start),
-        endDate: new Date(end),
-      };
+      setPlannedTasks((prevEvents) =>
+        // {
+        //   console.log(prevEvents);
+        //   return prevEvents;
+        // }
+        prevEvents.map((prevEvent) =>
+          prevEvent._id === event._id
+            ? { ...event, start, end, 
+              // startDate: start, endDate: end 
+            }
+            : prevEvent
+        )
+      );
 
-      updateTaskInPlannedTask(updateEvent);
-
-
+      // updateTaskInPlannedTask(updateEvent);
     },
-    [updateTaskInPlannedTask]
+    [
+      // updateTaskInPlannedTask,
+      setPlannedTasks,
+    ]
   );
 
   const onDroppedFromOutside = useCallback(
@@ -72,10 +81,23 @@ export const Calendar = ({
         ...draggedEvent,
         startDate: new Date(start),
         endDate: new Date(end),
-        // isDraggable: true,
-        // isResizable: true,
       };
       updateTaskInPlannedTask(newEvent);
+      start,
+      end,
+      resource,
+
+      setPlannedTasks((prevEvents) => [
+        ...prevEvents,
+        {
+          start,
+          end,
+          data: { appointment: draggedEvent },
+          isDraggable: true,
+          isResizable: true,
+        },
+      ]);
+
     },
     [draggedEvent, updateTaskInPlannedTask]
   );
