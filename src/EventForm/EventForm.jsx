@@ -10,7 +10,7 @@ import {
 } from "../requests";
 import FormRow from "../ui/FormRow";
 import { useDispatch } from "react-redux";
-import { addTask, updateTask, deleteTask } from "../Calendar/plannedTaskSlice";
+import { addTask, updateTask, deleteTask } from "../Calendar/CalendarTaskSlice";
 
 export default function EventForm({ task = {} }) {
   const dispatch = useDispatch();
@@ -30,7 +30,6 @@ export default function EventForm({ task = {} }) {
   const { deleteTaskInPlannedTask } = useDeleteTaskInPlannedTask();
 
   const onSubmit = async (values) => {
-    console.log(values, start);
     if (!isUpdateSession) {
       const selectedAppointment = {
         ...values,

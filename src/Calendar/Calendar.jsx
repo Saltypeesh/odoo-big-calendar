@@ -11,7 +11,7 @@ import { useCallback } from "react";
 import PlannedTaskEvent from "./PlannedTaskEvent";
 // import { EVENTS } from "./Calendar.constants";
 import { useDispatch, useSelector } from "react-redux";
-import { getPlannedTask, updateTask } from "./plannedTaskSlice";
+import { getPlannedTask, updateTask } from "./CalendarTaskSlice";
 
 const localizer = momentLocalizer(moment);
 
@@ -30,10 +30,7 @@ const initProps = {
 
 const DndCalendar = withDragAndDrop(BigCalendar);
 
-export const Calendar = ({
-  onShowAppointmentView,
-  draggedEvent,
-}) => {
+export const Calendar = ({ onShowAppointmentView, draggedEvent }) => {
   const { updateTaskInPlannedTask } = useUpdateTaskInPlannedTask();
   const dispatch = useDispatch();
   const plannedTask = useSelector(getPlannedTask);

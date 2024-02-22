@@ -1,6 +1,6 @@
 import { useDispatch } from "react-redux";
 import { useDeleteTaskInPlannedTask } from "../requests";
-import { deleteTask } from "./plannedTaskSlice";
+import { deleteTask } from "./CalendarTaskSlice";
 
 /* eslint-disable react/prop-types */
 function TaskItem({ task, setDraggedEvent }) {

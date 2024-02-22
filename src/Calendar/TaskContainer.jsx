@@ -2,7 +2,7 @@
 import { useState } from "react";
 import TaskItem from "./TaskItem";
 import { useSelector } from "react-redux";
-import { getPlannedTask } from "./plannedTaskSlice";
+import { getPlannedTask } from "./CalendarTaskSlice";
 
 // const dummyAppointment = {
 //   id: 3,

@@ -1,9 +1,9 @@
 import { configureStore } from "@reduxjs/toolkit";
-import plannedTaskSlice from "./Calendar/plannedTaskSlice";
+import CalendarTaskSlice from "./Calendar/CalendarTaskSlice";
 
 const store = configureStore({
   reducer: {
-    plannedTask: plannedTaskSlice,
+    calendarTask: CalendarTaskSlice,
   },
 });
 

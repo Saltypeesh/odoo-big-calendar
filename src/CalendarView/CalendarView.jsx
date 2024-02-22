@@ -4,7 +4,7 @@ import EventForm from "../EventForm/EventForm";
 import TaskContainer from "../Calendar/TaskContainer";
 import { useGetPlannedTasksByUser } from "../requests";
 import { useDispatch } from "react-redux";
-import { addAllTasks } from "../Calendar/plannedTaskSlice";
+import { addAllTasks } from "../Calendar/CalendarTaskSlice";
 
 // const currentDate = new Date();
 const currentYear = 2023;

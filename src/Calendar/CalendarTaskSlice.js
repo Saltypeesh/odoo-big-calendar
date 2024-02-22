@@ -4,8 +4,8 @@ const initialState = {
   plannedTask: [],
 };
 
-const plannedTaskSlice = createSlice({
-  name: "plannedTask",
+const CalendarTaskSlice = createSlice({
+  name: "calendarTask",
   initialState,
   reducers: {
     addAllTasks(state, action) {
@@ -38,8 +38,8 @@ const plannedTaskSlice = createSlice({
 });
 
 export const { addAllTasks, addTask, updateTask, deleteTask } =
-  plannedTaskSlice.actions;
+  CalendarTaskSlice.actions;
 
-export default plannedTaskSlice.reducer;
+export default CalendarTaskSlice.reducer;
 
-export const getPlannedTask = (state) => state.plannedTask.plannedTask;
+export const getPlannedTask = (state) => state.calendarTask.plannedTask;
