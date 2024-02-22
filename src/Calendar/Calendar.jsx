@@ -53,54 +53,81 @@ export const Calendar = ({
 
   const onChangeEventTime = useCallback(
     ({ event, start, end }) => {
+      const updateEvent = {
+        ...event,
+        start,
+        end,
+        startDate: start,
+        endDate: end,
+      };
+
       setPlannedTasks((prevEvents) =>
-        // {
-        //   console.log(prevEvents);
-        //   return prevEvents;
-        // }
         prevEvents.map((prevEvent) =>
-          prevEvent._id === event._id
-            ? { ...event, start, end, 
-              // startDate: start, endDate: end 
-            }
-            : prevEvent
+          prevEvent._id === event._id ? updateEvent : prevEvent
         )
       );
-
-      // updateTaskInPlannedTask(updateEvent);
+      updateTaskInPlannedTask(updateEvent);
     },
-    [
-      // updateTaskInPlannedTask,
-      setPlannedTasks,
-    ]
+    [updateTaskInPlannedTask, setPlannedTasks]
   );
 
   const onDroppedFromOutside = useCallback(
     ({ start, end }) => {
       const newEvent = {
         ...draggedEvent,
-        startDate: new Date(start),
-        endDate: new Date(end),
+        start,
+        end,
+        startDate: start,
+        endDate: end,
       };
+      setPlannedTasks((prevEvents) => {
+        const index = prevEvents.findIndex(
+          (event) => event._id === draggedEvent._id
+        );
+
+        if (index !== -1) {
+          return prevEvents.map((event, i) => {
+            if (i === index) return newEvent;
+            return event;
+          });
+        } else {
+          return [...prevEvents, newEvent];
+        }
+      });
       updateTaskInPlannedTask(newEvent);
-      start,
-      end,
-      resource,
-
-      setPlannedTasks((prevEvents) => [
-        ...prevEvents,
-        {
-          start,
-          end,
-          data: { appointment: draggedEvent },
-          isDraggable: true,
-          isResizable: true,
-        },
-      ]);
-
     },
-    [draggedEvent, updateTaskInPlannedTask]
+    [draggedEvent, updateTaskInPlannedTask, setPlannedTasks]
   );
+
+  // const onChangeEventTime = useCallback(
+  //   ({ event, start, end }) => {
+  //     console.log("onEventDrop", { event, start, end });
+
+  //     const updateEvent = {
+  //       ...event?.data?.appointment,
+  //       start: new Date(start),
+  //       end: new Date(end),
+  //     };
+
+  //     updateAppointment(updateEvent);
+  //   },
+  //   [updateAppointment]
+  // );
+
+  // const onDroppedFromOutside = useCallback(
+  //   ({ start, end }) => {
+  //     const newEvent = {
+  //       ...draggedEvent,
+  //       start: new Date(start),
+  //       end: new Date(end),
+  //       // isDraggable: true,
+  //       // isResizable: true,
+  //     };
+  //     console.log(newEvent);
+  //     updateAppointment(newEvent);
+  //   },
+  //   [draggedEvent, updateAppointment]
+  // );
 
   return (
     <DndCalendar

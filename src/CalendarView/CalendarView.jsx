@@ -33,7 +33,6 @@ function CalendarView() {
     }
   }, [plannedTasksData, isGetting]);
 
-  console.log(plannedTasks);
 
   return (
     <div style={{ display: "flex", gap: 10, height: "100%" }}>
@@ -42,7 +41,7 @@ function CalendarView() {
         setDraggedEvent={setDraggedEvent}
       />
 
-      {task && <EventForm task={task} key={task?._id} />}
+      {task && <EventForm setPlannedTasks={setPlannedTasks} task={task} key={task?._id} />}
 
       <div style={{ flexGrow: 1, flexBasis: "70%" }}>
         {plannedTasksData && (
