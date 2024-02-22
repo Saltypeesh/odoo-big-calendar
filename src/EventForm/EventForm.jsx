@@ -4,30 +4,17 @@ import { useForm } from "react-hook-form";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import {
-  useCreateAppointment,
-  useDeleteAppointment,
-  useUpdateAppointment,
+  useCreateTaskInPlannedTask,
+  useDeleteTaskInPlannedTask,
+  useUpdateTaskInPlannedTask,
 } from "../requests";
 import FormRow from "../ui/FormRow";
 
-// const CustomTimeInput = ({ value, onChange }) => (
-//   <input
-//     value={value}
-//     onChange={(e) => onChange && onChange(e.target.value)}
-//     style={{ width: "100%" }}
-//   />
-// );
+export default function EventForm({ task = {} }) {
+  const [start, setStart] = useState(new Date(task.start));
+  const [end, setEnd] = useState(new Date(task.end));
 
-export default function EventForm({ appointment = {} }) {
-  const [start, setStart] = useState(new Date(appointment.start));
-  const [end, setEnd] = useState(new Date(appointment.end));
-
-  //   const initialValues = useMemo(
-  //     () => ({ ...appointment, status: "CI" }),
-  //     [appointment]
-  //   );
-
-  const { id: updateId, ...updateValues } = appointment;
+  const { _id: updateId, ...updateValues } = task;
   const isUpdateSession = Boolean(updateId);
 
   const { register, handleSubmit, formState, reset } = useForm({
@@ -35,32 +22,36 @@ export default function EventForm({ appointment = {} }) {
   });
   const { errors } = formState;
 
-  const { createAppointment } = useCreateAppointment();
-  const { updateAppointment } = useUpdateAppointment();
-  const { deleteAppointment } = useDeleteAppointment();
+  const { createTaskInPlannedTask } = useCreateTaskInPlannedTask();
+  const { updateTaskInPlannedTask } = useUpdateTaskInPlannedTask();
+  const { deleteTaskInPlannedTask } = useDeleteTaskInPlannedTask();
 
   const onSubmit = async (values) => {
-    let selectedAppointment = {
-      ...values,
-      start,
-      end,
-      isDraggable: true,
-      isResizable: true,
-    };
-
-    if (!appointment.id) {
-      createAppointment(selectedAppointment);
+    if (!isUpdateSession) {
+      const selectedAppointment = {
+        ...values,
+        startDate: start,
+        endDate: end,
+        isDraggable: true,
+        isResizable: true,
+      };
+      createTaskInPlannedTask(selectedAppointment);
       reset();
     } else {
-      selectedAppointment = { ...values, start, end, id: appointment.id };
-      updateAppointment(selectedAppointment);
+      const selectedAppointment = {
+        ...values,
+        startDate: start,
+        endDate: end,
+        _id: task._id,
+      };
+      updateTaskInPlannedTask(selectedAppointment);
     }
   };
 
   useEffect(() => {
-    setStart(new Date(appointment.start)); // Update start date
-    setEnd(new Date(appointment.end)); // Update end date
-  }, [appointment.start, appointment.end]);
+    setStart(new Date(task.start));
+    setEnd(new Date(task.end));
+  }, [task.start, task.end]);
 
   return (
     <div
@@ -83,14 +74,15 @@ export default function EventForm({ appointment = {} }) {
         >
           <div>
             <h1 style={{ fontSize: "2em", marginBottom: "1em" }}>
-              {isUpdateSession ? "Update" : "Create"} an appointment
+              {isUpdateSession ? "Update" : "Create"} an task
             </h1>
           </div>
           {isUpdateSession && (
             <button
               aria-label="delete"
+              type="button"
               onClick={() => {
-                deleteAppointment(appointment.id);
+                deleteTaskInPlannedTask(task._id);
               }}
               style={{
                 backgroundColor: "red",
@@ -105,7 +97,7 @@ export default function EventForm({ appointment = {} }) {
           )}
         </div>
 
-        <FormRow label="Location" error={errors?.location?.message}>
+        <FormRow label="Title" error={errors?.title?.message}>
           <input
             style={{
               border: "1px solid #ddd",
@@ -113,49 +105,12 @@ export default function EventForm({ appointment = {} }) {
               padding: "8px 12px",
             }}
             type="text"
-            id="location"
+            id="title"
             //   disabled={isCreating}
-            {...register("location", {
+            {...register("title", {
               required: "This field is required",
             })}
           />
-        </FormRow>
-
-        <FormRow label="Resource" error={errors?.location?.message}>
-          <input
-            style={{
-              border: "1px solid #ddd",
-              borderRadius: "5px",
-              padding: "8px 12px",
-            }}
-            type="text"
-            id="resource"
-            {...register("resource", {
-              required: "This field is required",
-            })}
-          />
-        </FormRow>
-
-        <FormRow label="Address" error={errors?.location?.message}>
-          <input
-            style={{
-              border: "1px solid #ddd",
-              borderRadius: "5px",
-              padding: "8px 12px",
-            }}
-            type="text"
-            id="address"
-            {...register("address", {
-              required: "This field is required",
-            })}
-          />
-        </FormRow>
-
-        <FormRow label="status" error={errors?.location?.message}>
-          <select {...register("status")}>
-            <option value="CI">Checked In</option>
-            <option value="P">Pending</option>
-          </select>
         </FormRow>
 
         <div style={{ display: "flex", gap: "1em", marginTop: "1em" }}>

@@ -1,9 +1,9 @@
-import { useDeleteAppointment } from "../requests";
+import {useDeleteTaskInPlannedTask } from "../requests";
 
 /* eslint-disable react/prop-types */
 function TaskItem({ task, setDraggedEvent }) {
-  const { id, location, address } = task;
-  const { deleteAppointment } = useDeleteAppointment();
+  const { _id, title, matterName } = task;
+  const { deleteTaskInPlannedTask } = useDeleteTaskInPlannedTask();
 
   return (
     <div
@@ -11,9 +11,9 @@ function TaskItem({ task, setDraggedEvent }) {
       onDragStart={() => setDraggedEvent(task)}
       draggable
     >
-      <h4 style={{ fontSize: "20px", margin: 0 }}>{location}</h4>
-      <p>{address}</p>
-      <button onClick={() => deleteAppointment(id)}>Delete</button>
+      <h4 style={{ fontSize: "20px", margin: 0 }}>{title}</h4>
+      <p>{matterName}</p>
+      <button onClick={() => deleteTaskInPlannedTask(_id)}>Delete</button>
     </div>
   );
 }

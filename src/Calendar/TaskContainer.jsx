@@ -12,7 +12,7 @@ import EventForm from "../EventForm/EventForm";
 //   address: "1241 E Main St\n Stamford\n CT 06902\n United States",
 // };
 
-function TaskContainer({ appointments, setDraggedEvent }) {
+function TaskContainer({ plannedTasks, setDraggedEvent }) {
   const [openForm, setOpenForm] = useState(false);
 
   return (
@@ -28,8 +28,8 @@ function TaskContainer({ appointments, setDraggedEvent }) {
         overflowY: "scroll",
       }}
     >
-      {appointments.length > 0 &&
-        appointments.map((task, index) => (
+      {plannedTasks.length > 0 &&
+        plannedTasks.map((task, index) => (
           <TaskItem task={task} key={index} setDraggedEvent={setDraggedEvent} />
         ))}
       <button onClick={() => setOpenForm(!openForm)}>Create</button>

@@ -1,54 +1,56 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Calendar } from "../Calendar/Calendar";
 import EventForm from "../EventForm/EventForm";
-import AppointmentEvent from "../Calendar/AppointmentEvent";
-import getWeek from "../util/getWeekNumOfDate";
-import { useAppointments, useGetPlannedTasksByUser } from "../requests";
-import TaskItem from "../Calendar/TaskItem";
 import TaskContainer from "../Calendar/TaskContainer";
+import { useGetPlannedTasksByUser } from "../requests";
 
-const currentDate = new Date();
-const currentYear = currentDate.getFullYear();
-const currentWeekNum = getWeek(currentDate);
+// const currentDate = new Date();
+const currentYear = 2023;
+const currentWeekNum = 18;
 
 function CalendarView() {
-  const [appointment, setAppointment] = useState();
   const [draggedEvent, setDraggedEvent] = useState();
+  const [task, setTask] = useState();
+  const [plannedTasks, setPlannedTasks] = useState([]);
 
   const {
     data: plannedTasksData,
-    // isLoading,
+    isLoading: isGetting,
     // isError,
   } = useGetPlannedTasksByUser(currentWeekNum, currentYear);
 
-  const { data: appointmentData } = useAppointments();
+  useEffect(() => {
+    if (!isGetting) {
+      setPlannedTasks(
+        plannedTasksData?.plannedTasks?.tasks?.map((task) => ({
+          ...task,
+          start: task?.startDate === null ? null : new Date(task?.startDate),
+          end: task?.startDate === null ? null : new Date(task?.endDate),
+          isDraggable: true,
+          isResizable: true,
+        })) || []
+      );
+    }
+  }, [plannedTasksData, isGetting]);
 
-  const appointments =
-    appointmentData?.map((appointmentEvent) => ({
-      ...appointmentEvent,
-      start: new Date(appointmentEvent.start),
-      end: new Date(appointmentEvent.end),
-      isDraggable: appointmentEvent.isDraggable,
-      isResizable: appointmentEvent.isResizable,
-    })) || [];
+  console.log(plannedTasks);
 
   return (
     <div style={{ display: "flex", gap: 10, height: "100%" }}>
       <TaskContainer
-        appointments={appointments}
+        plannedTasks={plannedTasks}
         setDraggedEvent={setDraggedEvent}
       />
 
-      {appointment && (
-        <EventForm appointment={appointment} key={appointment?.id} />
-      )}
+      {task && <EventForm task={task} key={task?._id} />}
 
       <div style={{ flexGrow: 1, flexBasis: "70%" }}>
         {plannedTasksData && (
           <Calendar
-            onShowAppointmentView={(appointment) => setAppointment(appointment)}
+            onShowAppointmentView={(task) => setTask(task)}
             draggedEvent={draggedEvent}
-            plannedTasksData={plannedTasksData}
+            plannedTasks={plannedTasks}
+            setPlannedTasks={setPlannedTasks}
           />
         )}
       </div>

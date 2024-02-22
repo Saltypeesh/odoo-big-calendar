@@ -66,52 +66,105 @@ export const useDeleteAppointment = () => {
   return { isDeleting, deleteAppointment };
 };
 
-import axioss from "./axios";
+// ---------------------
 
-// export const useAppointments = () => {
-//   return useQuery({
-//     queryKey: ["GET_APPOINTMENTS"],
-//     queryFn: async () => {
-//       const { data } = await axios.get("http://localhost:7000/appointments");
-//       return data;
-//     },
-//   });
-// };
+const url = "https://vnlisserver.onrender.com/api";
+const token =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZDFjMTEzOGI4ZWQ5YjAzZDQ0YTViZiIsImlhdCI6MTcwODU3NjExOSwiZXhwIjoxNzQwMTEyMTE5fQ._3AQ5Z4IFewlJ0GbcSYt1rBOiw1-HzM1jozADYA2UTg";
 
 export const useGetPlannedTasksByUser = (weekNum, year) => {
   return useQuery({
     queryKey: ["GET_PLANNEDTASKS"],
     queryFn: async () => {
-      const res = await axioss.get(
-        "/plannedTasks/user?weekNum=" + weekNum + "&year=" + year
-      );
+      const res = await axios({
+        method: "get",
+        url: `${url}/plannedTasks/user?weekNum=${weekNum}&year=${year}`,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       return res.data;
     },
   });
 };
 
-//   // const token = localStorage.getItem("token");
-//   const { mutate: getPlannedTasksByUser, isPending: isGetting } = useMutation({
-//     mutationFn: async (weekNum, year) => {
-//       console.log(weekNum, year);
+export const useCreateTaskInPlannedTask = () => {
+  const queryClient = useQueryClient();
+  const plannedTaskId = "65d1cccbefd1211377cedbed";
 
-//       // const res = await axioss.get(
-//       //   "/plannedTasks/user?weekNum=" + weekNum + "&year=" + year
-//       // );
+  const { mutate: createTaskInPlannedTask, isPending: isCreating } =
+    useMutation({
+      mutationFn: async (task) => {
+        console.log(task);
+        const res = await axios({
+          method: "post",
+          url: `${url}/plannedTasks/${plannedTaskId}/addTask`,
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          data: {
+            ...task,
+          },
+        });
+        console.log(res);
+        return res;
+      },
+      onSuccess: () => {
+        queryClient.invalidateQueries(["GET_PLANNEDTASKS"]);
+      },
+    });
+  return { isCreating, createTaskInPlannedTask };
+};
 
-//       // const res = await axios({
-//       //   method: "get",
-//       //   url: `https://d392hd1u5yd463.cloudfront.net/api/getPlannedTasksByTeam`,
-//       //   headers: {
-//       //     Authorization: `Bearer ${token}`,
-//       //   },
-//       // });
+export const useUpdateTaskInPlannedTask = () => {
+  const queryClient = useQueryClient();
 
-//       // return res;
-//     },
-//     onSuccess: () => {
-//       queryClient.invalidateQueries(["GET_APPOINTMENTS"]);
-//     },
-//   });
-//   return { isGetting, getPlannedTasksByUser };
-// };
+  const { mutate: updateTaskInPlannedTask, isPending: isUpdating } =
+    useMutation({
+      mutationFn: async (task) => {
+        console.log(task);
+        const res = await axios({
+          method: "patch",
+          url: `${url}/taskInPlannedTask/${task._id}`,
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          data: {
+            title: task.title,
+            startDate: task.startDate,
+            endDate: task.endDate,
+          },
+        });
+        console.log(res);
+        return res;
+      },
+      onSuccess: () => {
+        queryClient.invalidateQueries(["GET_PLANNEDTASKS"]);
+      },
+    });
+  return { isUpdating, updateTaskInPlannedTask };
+};
+
+export const useDeleteTaskInPlannedTask = () => {
+  const queryClient = useQueryClient();
+
+  const { mutate: deleteTaskInPlannedTask, isPending: isDeleting } =
+    useMutation({
+      mutationFn: async (id) => {
+        console.log("test");
+        const res = await axios({
+          method: "delete",
+          url: `${url}/taskInPlannedTask/${id}`,
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        return res;
+      },
+      onSuccess: () => {
+        queryClient.invalidateQueries(["GET_PLANNEDTASKS"]);
+      },
+    });
+  return { isDeleting, deleteTaskInPlannedTask };
+};

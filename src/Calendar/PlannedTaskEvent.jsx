@@ -4,7 +4,7 @@ import { EVENT_STATUS_COLORS } from "./Calendar.constants";
 import { useState } from "react";
 
 export default function PlannedTaskEvent({ task, onDoubleClick }) {
-  const { matterCode, matterName, name, deadline } = task;
+  const { title } = task;
   const background = EVENT_STATUS_COLORS[status];
 
   const [isOpen, setIsOpen] = useState(false);
@@ -31,7 +31,7 @@ export default function PlannedTaskEvent({ task, onDoubleClick }) {
         <div style={{ display: "flex", justifyContent: "space-between" }}>
           <div>
             {/* Represent for title */}
-            <p style={{ fontSize: "12px" }}>{matterName}</p>
+            <p style={{ fontSize: "12px" }}>{title}</p>
           </div>
         </div>
       </div>
