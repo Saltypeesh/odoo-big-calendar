@@ -9,8 +9,11 @@ import {
   useUpdateTaskInPlannedTask,
 } from "../requests";
 import FormRow from "../ui/FormRow";
+import { useDispatch } from "react-redux";
+import { addTask, updateTask, deleteTask } from "../Calendar/plannedTaskSlice";
 
 export default function EventForm({ task = {} }) {
+  const dispatch = useDispatch();
   const [start, setStart] = useState(new Date(task.start));
   const [end, setEnd] = useState(new Date(task.end));
 
@@ -27,23 +30,32 @@ export default function EventForm({ task = {} }) {
   const { deleteTaskInPlannedTask } = useDeleteTaskInPlannedTask();
 
   const onSubmit = async (values) => {
+    console.log(values, start);
     if (!isUpdateSession) {
       const selectedAppointment = {
         ...values,
-        startDate: start,
-        endDate: end,
+        start: start.toISOString(),
+        end: end.toISOString(),
+        startDate: start.toISOString(),
+        endDate: end.toISOString(),
         isDraggable: true,
         isResizable: true,
       };
+
+      dispatch(addTask(selectedAppointment));
       createTaskInPlannedTask(selectedAppointment);
       reset();
     } else {
       const selectedAppointment = {
         ...values,
-        startDate: start,
-        endDate: end,
+        start: start.toISOString(),
+        end: end.toISOString(),
+        startDate: start.toISOString(),
+        endDate: end.toISOString(),
         _id: task._id,
       };
+
+      dispatch(updateTask(task._id, selectedAppointment));
       updateTaskInPlannedTask(selectedAppointment);
     }
   };
@@ -82,6 +94,7 @@ export default function EventForm({ task = {} }) {
               aria-label="delete"
               type="button"
               onClick={() => {
+                dispatch(deleteTask(task._id));
                 deleteTaskInPlannedTask(task._id);
               }}
               style={{

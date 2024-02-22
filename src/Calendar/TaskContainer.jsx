@@ -1,8 +1,8 @@
 /* eslint-disable react/prop-types */
 import { useState } from "react";
-import { useCreateAppointment } from "../requests";
 import TaskItem from "./TaskItem";
-import EventForm from "../EventForm/EventForm";
+import { useSelector } from "react-redux";
+import { getPlannedTask } from "./plannedTaskSlice";
 
 // const dummyAppointment = {
 //   id: 3,
@@ -12,8 +12,9 @@ import EventForm from "../EventForm/EventForm";
 //   address: "1241 E Main St\n Stamford\n CT 06902\n United States",
 // };
 
-function TaskContainer({ plannedTasks, setDraggedEvent }) {
+function TaskContainer({ setDraggedEvent }) {
   const [openForm, setOpenForm] = useState(false);
+  const plannedTask = useSelector(getPlannedTask);
 
   return (
     <div
@@ -28,8 +29,8 @@ function TaskContainer({ plannedTasks, setDraggedEvent }) {
         overflowY: "scroll",
       }}
     >
-      {plannedTasks.length > 0 &&
-        plannedTasks.map((task, index) => (
+      {plannedTask.length > 0 &&
+        plannedTask.map((task, index) => (
           <TaskItem task={task} key={index} setDraggedEvent={setDraggedEvent} />
         ))}
       <button onClick={() => setOpenForm(!openForm)}>Create</button>

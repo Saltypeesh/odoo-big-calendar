@@ -10,6 +10,8 @@ import "./index.css";
 import { useCallback } from "react";
 import PlannedTaskEvent from "./PlannedTaskEvent";
 // import { EVENTS } from "./Calendar.constants";
+import { useDispatch, useSelector } from "react-redux";
+import { getPlannedTask, updateTask } from "./plannedTaskSlice";
 
 const localizer = momentLocalizer(moment);
 
@@ -31,12 +33,18 @@ const DndCalendar = withDragAndDrop(BigCalendar);
 export const Calendar = ({
   onShowAppointmentView,
   draggedEvent,
-  plannedTasks,
-  setPlannedTasks,
 }) => {
   const { updateTaskInPlannedTask } = useUpdateTaskInPlannedTask();
+  const dispatch = useDispatch();
+  const plannedTask = useSelector(getPlannedTask);
 
-  const plannedTasksComponents = {
+  const convertedPlannedTask = plannedTask.map((task) => ({
+    ...task,
+    start: new Date(task.start),
+    end: new Date(task.end),
+  }));
+
+  const plannedTaskComponents = {
     event: ({ event }) => {
       // console.log(event);
       const data = event;
@@ -55,79 +63,35 @@ export const Calendar = ({
     ({ event, start, end }) => {
       const updateEvent = {
         ...event,
-        start,
-        end,
-        startDate: start,
-        endDate: end,
+        start: start.toISOString(),
+        end: end.toISOString(),
       };
 
-      setPlannedTasks((prevEvents) =>
-        prevEvents.map((prevEvent) =>
-          prevEvent._id === event._id ? updateEvent : prevEvent
-        )
-      );
+      dispatch(updateTask(event._id, updateEvent));
       updateTaskInPlannedTask(updateEvent);
     },
-    [updateTaskInPlannedTask, setPlannedTasks]
+    [updateTaskInPlannedTask, dispatch]
   );
 
   const onDroppedFromOutside = useCallback(
     ({ start, end }) => {
       const newEvent = {
         ...draggedEvent,
-        start,
-        end,
-        startDate: start,
-        endDate: end,
+        start: start.toISOString(),
+        end: end.toISOString(),
+        startDate: start.toISOString(),
+        endDate: end.toISOString(),
       };
-      setPlannedTasks((prevEvents) => {
-        const index = prevEvents.findIndex(
-          (event) => event._id === draggedEvent._id
-        );
 
-        if (index !== -1) {
-          return prevEvents.map((event, i) => {
-            if (i === index) return newEvent;
-            return event;
-          });
-        } else {
-          return [...prevEvents, newEvent];
-        }
-      });
+      const existedId = convertedPlannedTask.find(
+        (event) => event._id === draggedEvent._id
+      )._id;
+
+      dispatch(updateTask(existedId, newEvent));
       updateTaskInPlannedTask(newEvent);
     },
-    [draggedEvent, updateTaskInPlannedTask, setPlannedTasks]
+    [draggedEvent, convertedPlannedTask, dispatch, updateTaskInPlannedTask]
   );
-
-  // const onChangeEventTime = useCallback(
-  //   ({ event, start, end }) => {
-  //     console.log("onEventDrop", { event, start, end });
-
-  //     const updateEvent = {
-  //       ...event?.data?.appointment,
-  //       start: new Date(start),
-  //       end: new Date(end),
-  //     };
-
-  //     updateAppointment(updateEvent);
-  //   },
-  //   [updateAppointment]
-  // );
-
-  // const onDroppedFromOutside = useCallback(
-  //   ({ start, end }) => {
-  //     const newEvent = {
-  //       ...draggedEvent,
-  //       start: new Date(start),
-  //       end: new Date(end),
-  //       // isDraggable: true,
-  //       // isResizable: true,
-  //     };
-  //     console.log(newEvent);
-  //     updateAppointment(newEvent);
-  //   },
-  //   [draggedEvent, updateAppointment]
-  // );
 
   return (
     <DndCalendar
@@ -138,8 +102,8 @@ export const Calendar = ({
         const task = event;
         task && onShowAppointmentView(task);
       }}
-      events={plannedTasks}
-      components={plannedTasksComponents}
+      events={convertedPlannedTask}
+      components={plannedTaskComponents}
       style={{ width: "100%" }}
       draggableAccessor={"isDraggable"}
       resizableAccessor={"isResizable"}

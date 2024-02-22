@@ -95,7 +95,6 @@ export const useCreateTaskInPlannedTask = () => {
   const { mutate: createTaskInPlannedTask, isPending: isCreating } =
     useMutation({
       mutationFn: async (task) => {
-        console.log(task);
         const res = await axios({
           method: "post",
           url: `${url}/plannedTasks/${plannedTaskId}/addTask`,
@@ -122,7 +121,6 @@ export const useUpdateTaskInPlannedTask = () => {
   const { mutate: updateTaskInPlannedTask, isPending: isUpdating } =
     useMutation({
       mutationFn: async (task) => {
-        console.log(task);
         const res = await axios({
           method: "patch",
           url: `${url}/taskInPlannedTask/${task._id}`,
@@ -131,8 +129,8 @@ export const useUpdateTaskInPlannedTask = () => {
           },
           data: {
             title: task.title,
-            startDate: task.startDate,
-            endDate: task.endDate,
+            startDate: task.start,
+            endDate: task.end,
           },
         });
         console.log(res);
@@ -151,7 +149,6 @@ export const useDeleteTaskInPlannedTask = () => {
   const { mutate: deleteTaskInPlannedTask, isPending: isDeleting } =
     useMutation({
       mutationFn: async (id) => {
-        console.log("test");
         const res = await axios({
           method: "delete",
           url: `${url}/taskInPlannedTask/${id}`,
