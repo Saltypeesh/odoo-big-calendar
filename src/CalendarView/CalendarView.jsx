@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { Calendar } from "../Calendar/Calendar";
-import EventForm from "../EventForm/EventForm";
 import TaskContainer from "../Calendar/TaskContainer";
 // import { useGetPlannedTasksByUser } from "../requests";
 import { useDispatch } from "react-redux";
@@ -13,7 +12,6 @@ const currentWeekNum = 18;
 
 function CalendarView() {
   const [draggedEvent, setDraggedEvent] = useState();
-  const [task, setTask] = useState();
 
   const dispatch = useDispatch();
 
@@ -41,13 +39,8 @@ function CalendarView() {
     <div style={{ display: "flex", gap: 10, height: "100%" }}>
       <TaskContainer setDraggedEvent={setDraggedEvent} />
 
-      {task && <EventForm task={task} key={task?._id} />}
-
       <div style={{ flexGrow: 1, flexBasis: "70%" }}>
-        <Calendar
-          onShowAppointmentView={(task) => setTask(task)}
-          draggedEvent={draggedEvent}
-        />
+        <Calendar draggedEvent={draggedEvent} />
       </div>
     </div>
   );
