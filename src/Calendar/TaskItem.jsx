@@ -1,12 +1,25 @@
 import { useDispatch } from "react-redux";
-import { useDeleteTaskInPlannedTask } from "../requests";
 import { deleteTask } from "./CalendarTaskSlice";
+import deleteTaskInPlannedTask from "../requests/deleteTaskInPlannedTask";
 
 /* eslint-disable react/prop-types */
 function TaskItem({ task, setDraggedEvent }) {
   const dispatch = useDispatch();
   const { _id, title, matterName } = task;
-  const { deleteTaskInPlannedTask } = useDeleteTaskInPlannedTask();
+
+  function DeleteTask(id) {
+    dispatch(deleteTask(id));
+
+    deleteTaskInPlannedTask(id)
+      .then((res) => {
+        if (res.data.status === "success") {
+          console.log("success");
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
 
   return (
     <div
@@ -18,8 +31,7 @@ function TaskItem({ task, setDraggedEvent }) {
       <p>{matterName}</p>
       <button
         onClick={() => {
-          dispatch(deleteTask(_id));
-          deleteTaskInPlannedTask(_id);
+          DeleteTask(_id);
         }}
       >
         Delete

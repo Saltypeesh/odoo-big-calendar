@@ -4,7 +4,7 @@ import { Calendar as BigCalendar, momentLocalizer } from "react-big-calendar";
 import withDragAndDrop from "react-big-calendar/lib/addons/dragAndDrop";
 import moment from "moment";
 // import AppointmentEvent from "./AppointmentEvent";
-import { useUpdateTaskInPlannedTask } from "../requests";
+// import { useUpdateTaskInPlannedTask } from "../requests";
 import "./index.css";
 // import AppointmentEvent from "./AppointmentEvent";
 import { useCallback } from "react";
@@ -12,6 +12,7 @@ import PlannedTaskEvent from "./PlannedTaskEvent";
 // import { EVENTS } from "./Calendar.constants";
 import { useDispatch, useSelector } from "react-redux";
 import { getPlannedTask, updateTask } from "./CalendarTaskSlice";
+import updateTaskInPlannedTask from "../requests/updateTaskInPlannedTask";
 
 const localizer = momentLocalizer(moment);
 
@@ -31,7 +32,7 @@ const initProps = {
 const DndCalendar = withDragAndDrop(BigCalendar);
 
 export const Calendar = ({ onShowAppointmentView, draggedEvent }) => {
-  const { updateTaskInPlannedTask } = useUpdateTaskInPlannedTask();
+  // const { updateTaskInPlannedTask } = useUpdateTaskInPlannedTask();
   const dispatch = useDispatch();
   const plannedTask = useSelector(getPlannedTask);
 
@@ -56,6 +57,23 @@ export const Calendar = ({ onShowAppointmentView, draggedEvent }) => {
     },
   };
 
+  const UpdateTask = useCallback(
+    (id, updatedTask) => {
+      dispatch(updateTask(id, updatedTask));
+
+      updateTaskInPlannedTask(updatedTask)
+        .then((res) => {
+          if (res.data.status === "success") {
+            console.log("success");
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+    [dispatch]
+  );
+
   const onChangeEventTime = useCallback(
     ({ event, start, end }) => {
       const updateEvent = {
@@ -64,10 +82,9 @@ export const Calendar = ({ onShowAppointmentView, draggedEvent }) => {
         end: end.toISOString(),
       };
 
-      dispatch(updateTask(event._id, updateEvent));
-      updateTaskInPlannedTask(updateEvent);
+      UpdateTask(event._id, updateEvent);
     },
-    [updateTaskInPlannedTask, dispatch]
+    [UpdateTask]
   );
 
   const onDroppedFromOutside = useCallback(
@@ -84,10 +101,9 @@ export const Calendar = ({ onShowAppointmentView, draggedEvent }) => {
         (event) => event._id === draggedEvent._id
       )._id;
 
-      dispatch(updateTask(existedId, newEvent));
-      updateTaskInPlannedTask(newEvent);
+      UpdateTask(existedId, newEvent);
     },
-    [draggedEvent, convertedPlannedTask, dispatch, updateTaskInPlannedTask]
+    [draggedEvent, convertedPlannedTask, UpdateTask]
   );
 
   return (

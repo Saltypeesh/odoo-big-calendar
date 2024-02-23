@@ -3,14 +3,13 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import {
-  useDeleteTaskInPlannedTask,
-  useUpdateTaskInPlannedTask,
-} from "../requests";
+// import { useUpdateTaskInPlannedTask } from "../requests";
 import FormRow from "../ui/FormRow";
 import { useDispatch } from "react-redux";
 import { addTask, updateTask, deleteTask } from "../Calendar/CalendarTaskSlice";
 import createTaskInPlannedTask from "../requests/createTaskInPlannedTask";
+import deleteTaskInPlannedTask from "../requests/deleteTaskInPlannedTask";
+import updateTaskInPlannedTask from "../requests/updateTaskInPlannedTask";
 
 export default function EventForm({ task = {} }) {
   const dispatch = useDispatch();
@@ -25,10 +24,21 @@ export default function EventForm({ task = {} }) {
   });
   const { errors } = formState;
 
-  const { updateTaskInPlannedTask } = useUpdateTaskInPlannedTask();
-  const { deleteTaskInPlannedTask } = useDeleteTaskInPlannedTask();
+  function UpdateTask(id, updatedTask) {
+    dispatch(updateTask(id, updatedTask));
 
-  function createTask(newTask) {
+    updateTaskInPlannedTask(updatedTask)
+      .then((res) => {
+        if (res.data.status === "success") {
+          console.log("success");
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+
+  function CreateTask(newTask) {
     dispatch(addTask(newTask));
 
     createTaskInPlannedTask(newTask)
@@ -43,9 +53,23 @@ export default function EventForm({ task = {} }) {
     reset();
   }
 
+  function DeleteTask(id) {
+    dispatch(deleteTask(id));
+
+    deleteTaskInPlannedTask(id)
+      .then((res) => {
+        if (res.data.status === "success") {
+          console.log("success");
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+
   const onSubmit = async (values) => {
     if (!isUpdateSession) {
-      createTask({
+      CreateTask({
         ...values,
         start: start.toISOString(),
         end: end.toISOString(),
@@ -55,17 +79,14 @@ export default function EventForm({ task = {} }) {
         isResizable: true,
       });
     } else {
-      const selectedAppointment = {
+      UpdateTask(task._id, {
         ...values,
         start: start.toISOString(),
         end: end.toISOString(),
         startDate: start.toISOString(),
         endDate: end.toISOString(),
         _id: task._id,
-      };
-
-      dispatch(updateTask(task._id, selectedAppointment));
-      updateTaskInPlannedTask(selectedAppointment);
+      });
     }
   };
 
@@ -103,8 +124,7 @@ export default function EventForm({ task = {} }) {
               aria-label="delete"
               type="button"
               onClick={() => {
-                dispatch(deleteTask(task._id));
-                deleteTaskInPlannedTask(task._id);
+                DeleteTask(task._id);
               }}
               style={{
                 backgroundColor: "red",

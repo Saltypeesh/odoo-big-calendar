@@ -115,53 +115,53 @@ const token =
 //   return { isCreating, createTaskInPlannedTask };
 // };
 
-export const useUpdateTaskInPlannedTask = () => {
-  const queryClient = useQueryClient();
+// export const useUpdateTaskInPlannedTask = () => {
+//   const queryClient = useQueryClient();
 
-  const { mutate: updateTaskInPlannedTask, isPending: isUpdating } =
-    useMutation({
-      mutationFn: async (task) => {
-        const res = await axios({
-          method: "patch",
-          url: `${url}/taskInPlannedTask/${task._id}`,
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          data: {
-            title: task.title,
-            startDate: task.start,
-            endDate: task.end,
-          },
-        });
-        console.log(res);
-        return res;
-      },
-      onSuccess: () => {
-        queryClient.invalidateQueries(["GET_PLANNEDTASKS"]);
-      },
-    });
-  return { isUpdating, updateTaskInPlannedTask };
-};
+//   const { mutate: updateTaskInPlannedTask, isPending: isUpdating } =
+//     useMutation({
+//       mutationFn: async (task) => {
+//         const res = await axios({
+//           method: "patch",
+//           url: `${url}/taskInPlannedTask/${task._id}`,
+//           headers: {
+//             Authorization: `Bearer ${token}`,
+//           },
+//           data: {
+//             title: task.title,
+//             startDate: task.start,
+//             endDate: task.end,
+//           },
+//         });
+//         console.log(res);
+//         return res;
+//       },
+//       onSuccess: () => {
+//         queryClient.invalidateQueries(["GET_PLANNEDTASKS"]);
+//       },
+//     });
+//   return { isUpdating, updateTaskInPlannedTask };
+// };
 
-export const useDeleteTaskInPlannedTask = () => {
-  const queryClient = useQueryClient();
+// export const useDeleteTaskInPlannedTask = () => {
+//   const queryClient = useQueryClient();
 
-  const { mutate: deleteTaskInPlannedTask, isPending: isDeleting } =
-    useMutation({
-      mutationFn: async (id) => {
-        const res = await axios({
-          method: "delete",
-          url: `${url}/taskInPlannedTask/${id}`,
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+//   const { mutate: deleteTaskInPlannedTask, isPending: isDeleting } =
+//     useMutation({
+//       mutationFn: async (id) => {
+//         const res = await axios({
+//           method: "delete",
+//           url: `${url}/taskInPlannedTask/${id}`,
+//           headers: {
+//             Authorization: `Bearer ${token}`,
+//           },
+//         });
 
-        return res;
-      },
-      onSuccess: () => {
-        queryClient.invalidateQueries(["GET_PLANNEDTASKS"]);
-      },
-    });
-  return { isDeleting, deleteTaskInPlannedTask };
-};
+//         return res;
+//       },
+//       onSuccess: () => {
+//         queryClient.invalidateQueries(["GET_PLANNEDTASKS"]);
+//       },
+//     });
+//   return { isDeleting, deleteTaskInPlannedTask };
+// };
