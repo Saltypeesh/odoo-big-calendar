@@ -41,14 +41,18 @@ const initProps = {
 
 const DndCalendar = withDragAndDrop(BigCalendar);
 
-export const Calendar = ({ draggedEvent }) => {
+export const Calendar = ({ draggedEvent, openForm, setOpenForm }) => {
   const dispatch = useDispatch();
   const plannedTask = useSelector(getPlannedTask);
-  const [position, setPosition] = useState();
+  const [position, setPosition] = useState({ x: 500, y: 100 });
   const [appointment, setAppointment] = useState();
-  const [openForm, setOpenForm] = useState(false);
 
   const formSize = { width: 450, height: 500 };
+
+  const [screenSize, setScreenSize] = useState({
+    width: window.innerWidth,
+    height: window.innerHeight,
+  });
 
   const convertedPlannedTask = plannedTask.map((task) => ({
     ...task,
@@ -120,11 +124,6 @@ export const Calendar = ({ draggedEvent }) => {
     [draggedEvent, convertedPlannedTask, UpdateTask]
   );
 
-  const [screenSize, setScreenSize] = useState({
-    width: window.innerWidth,
-    height: window.innerHeight,
-  });
-
   useEffect(() => {
     const handleResize = () => {
       setScreenSize({
@@ -163,6 +162,7 @@ export const Calendar = ({ draggedEvent }) => {
               background: "white",
               position: "absolute",
               overflow: "hidden",
+              boxShadow: "rgba(0, 0, 0, 0.25) 0px 0px 4px 0px",
               top: `${
                 position.y + formSize.height / 2 + 50 > screenSize.height
                   ? position.y - formSize.height
@@ -192,13 +192,12 @@ export const Calendar = ({ draggedEvent }) => {
             x: event.box?.x || event.bounds.left,
             y: event.box?.y || event.bounds.top,
           });
-          console.log(position);
           setAppointment({ start: event.start, end: event.end });
         }}
         onDoubleClickEvent={(event) => {
-          const task = event;
-          setOpenForm(true);
-          task && setAppointment(task);
+          event && setOpenForm(true);
+          event && setAppointment(event);
+          setPosition({ x: 500, y: 100 });
         }}
         events={convertedPlannedTask}
         components={plannedTaskComponents}

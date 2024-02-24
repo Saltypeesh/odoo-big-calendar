@@ -13,8 +13,8 @@ import updateTaskInPlannedTask from "../requests/updateTaskInPlannedTask";
 
 export default function EventForm({ task = {} }) {
   const dispatch = useDispatch();
-  const [start, setStart] = useState(new Date(task.start));
-  const [end, setEnd] = useState(new Date(task.end));
+   const [start, setStart] = useState(new Date(task.start) || new Date());
+  const [end, setEnd] = useState(new Date(task.end) || new Date());
 
   const { _id: updateId, ...updateValues } = task;
   const isUpdateSession = Boolean(updateId);
@@ -91,19 +91,18 @@ export default function EventForm({ task = {} }) {
   };
 
   useEffect(() => {
-    setStart(new Date(task.start));
-    setEnd(new Date(task.end));
+    setStart(new Date(task.start) || new Date());
+    setEnd(new Date(task.end) || new Date());
   }, [task.start, task.end]);
 
   return (
     <div
       style={{
-        boxShadow: "2px  2px  5px rgba(0,  0,  0,  0.1)",
-        padding: "10px",
+        padding: "20px",
         borderRadius: "5px",
         background: "white",
-        // width: "100%",
-        // position: "absolute",
+        width: "100%",
+        height: "100%",
       }}
     >
       <form onSubmit={handleSubmit(onSubmit)}>

@@ -1,19 +1,9 @@
 /* eslint-disable react/prop-types */
-import { useState } from "react";
 import TaskItem from "./TaskItem";
 import { useSelector } from "react-redux";
 import { getPlannedTask } from "./CalendarTaskSlice";
 
-// const dummyAppointment = {
-//   id: 3,
-//   status: "CI",
-//   location: "Connecticut",
-//   resource: "Alex Hales",
-//   address: "1241 E Main St\n Stamford\n CT 06902\n United States",
-// };
-
-function TaskContainer({ setDraggedEvent }) {
-  const [openForm, setOpenForm] = useState(false);
+function TaskContainer({ setDraggedEvent, setOpenForm }) {
   const plannedTask = useSelector(getPlannedTask);
 
   return (
@@ -50,7 +40,7 @@ function TaskContainer({ setDraggedEvent }) {
           ))}
       </div>
       <button
-        onClick={() => setOpenForm(!openForm)}
+        onClick={() => setOpenForm((state) => !state)}
         style={{
           background: "#9B1C1F",
           border: "none",
@@ -74,7 +64,6 @@ function TaskContainer({ setDraggedEvent }) {
           alt="SVG Image"
         />
       </button>
-      {/* {openForm && <EventForm />} */}
     </div>
   );
 }

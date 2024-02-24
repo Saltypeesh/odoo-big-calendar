@@ -75,3 +75,19 @@
 .rbc-today {
   background-color: #f8dedf8c !important;
 }
+
+.rbc-current-time-indicator {
+  background-color: #CE2529 !important;
+}
+
+.rbc-current-time-indicator::before {
+  content: '';
+  position: absolute;
+  top: -5px;
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-bottom: 10px solid #CE2529;
+  transform: rotate(90deg);
+}

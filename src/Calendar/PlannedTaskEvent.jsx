@@ -13,11 +13,12 @@ export default function PlannedTaskEvent({ task, onDoubleClick }) {
     <>
       <div
         style={{
-          backgroundColor: "#c7edca",
-          // padding: "1rem",
+          backgroundColor: "#D3F7D7",
+          padding: "10px",
           height: "100%",
           color: "black",
-          border: "1px solid red",
+          borderRadius: "4px",
+          borderTop: "8px solid #6CB975",
         }}
         // onDoubleClick={() => onDoubleClick(appointment)}
         // onContextMenu={(e) => {
@@ -31,7 +32,7 @@ export default function PlannedTaskEvent({ task, onDoubleClick }) {
         <div style={{ display: "flex", justifyContent: "space-between" }}>
           <div>
             {/* Represent for title */}
-            <p style={{ fontSize: "12px" }}>{title}</p>
+            <p style={{ fontSize: "12px", margin: 0 }}>{title}</p>
           </div>
         </div>
       </div>

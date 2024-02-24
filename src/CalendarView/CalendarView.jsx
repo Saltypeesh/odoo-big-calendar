@@ -12,6 +12,7 @@ const currentWeekNum = 18;
 
 function CalendarView() {
   const [draggedEvent, setDraggedEvent] = useState();
+  const [openForm, setOpenForm] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -37,10 +38,17 @@ function CalendarView() {
 
   return (
     <div style={{ display: "flex", gap: 10, height: "100%" }}>
-      <TaskContainer setDraggedEvent={setDraggedEvent} />
+      <TaskContainer
+        setDraggedEvent={setDraggedEvent}
+        setOpenForm={setOpenForm}
+      />
 
       <div style={{ flexGrow: 1, flexBasis: "70%" }}>
-        <Calendar draggedEvent={draggedEvent} />
+        <Calendar
+          draggedEvent={draggedEvent}
+          openForm={openForm}
+          setOpenForm={setOpenForm}
+        />
       </div>
     </div>
   );
